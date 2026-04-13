@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SJO Separation Decision Worksheet v2 | Internal Use Only</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background: #e9eef3;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 2rem 1rem;
+            color: #1a2c3e;
+        }
+        .form-container {
+            max-width: 1340px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid #cfdfed;
+        }
+        .form-header {
+            background: #0b2b3b;
+            color: white;
+            padding: 1.4rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .form-header h1 { margin: 0; font-weight: 600; font-size: 1.65rem; }
+        .header-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .internal-badge {
+            background: #d1452b;
+            padding: 0.25rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .version-badge {
+            background: #1a5276;
+            padding: 0.25rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+        form { padding: 2rem; }
+        fieldset {
+            border: 1px solid #d4e0e9;
+            border-radius: 20px;
+            padding: 1.5rem 1.8rem;
+            margin-bottom: 2rem;
+            background: #fefefe;
+        }
+        legend {
+            font-weight: 700;
+            font-size: 1.2rem;
+            background: white;
+            padding: 0 1rem;
+            color: #0b4f6c;
+        }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.2rem 2rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem 1.5rem; }
+        .form-group { margin-bottom: 0.9rem; }
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #2c5a74;
+            margin-bottom: 0.3rem;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.65rem 1rem;
+            border: 1px solid #cbdde6;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: white;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2c7da0;
+            box-shadow: 0 0 0 3px rgba(44,125,160,0.18);
+        }
+        input[readonly], select[readonly] {
+            background: #f0f6fa;
+            color: #4a7a95;
+            cursor: default;
+        }
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.35rem;
+            align-items: center;
+        }
+        .checkbox-group label, .radio-group label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: normal;
+            text-transform: none;
+            letter-spacing: normal;
+            font-size: 0.88rem;
+        }
+        input[type="checkbox"], input[type="radio"] { width: 1rem; height: 1rem; margin: 0; flex-shrink: 0; }
+
+        /* Employee Card Styles */
+        .employee-card {
+            background: #f4f8fc;
+            border: 2px solid #c8dde9;
+            border-radius: 16px;
+            padding: 0;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .employee-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0b4f6c;
+            color: white;
+            padding: 0.8rem 1.4rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        .employee-card-header .emp-label { font-weight: 700; font-size: 1rem; }
+        .employee-card-header .emp-badge {
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.15);
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            margin-left: 0.75rem;
+        }
+        .employee-card-header .header-actions { display: flex; gap: 0.6rem; align-items: center; }
+        .remove-emp-btn {
+            background: rgba(209,69,43,0.8);
+            border: none;
+            padding: 0.25rem 0.85rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: white;
+            font-weight: 600;
+        }
+        .toggle-card-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: white;
+        }
+        .employee-card-body { padding: 1.4rem; }
+
+        /* Sub-section headers within employee card */
+        .sub-section {
+            margin-bottom: 1.4rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid #d8eaf3;
+        }
+        .sub-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .sub-section-title {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #0b4f6c;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .sub-section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #c8dde9;
+        }
+
+        /* Conditional fields */
+        .conditional-fields {
+            background: #fffbe6;
+            border: 1px solid #f0d060;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 0.75rem;
+        }
+        .conditional-fields.blue {
+            background: #eff7ff;
+            border-color: #aacee8;
+        }
+
+        /* Alert / warning boxes */
+        .alert {
+            border-radius: 12px;
+            padding: 0.85rem 1.1rem;
+            margin: 0.75rem 0;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        .alert-warning { background: #fef7e0; border-left: 4px solid #e6a017; }
+        .alert-danger  { background: #fdecea; border-left: 4px solid #d1452b; }
+        .alert-info    { background: #e8f3fb; border-left: 4px solid #2c7da0; }
+        .alert-success { background: #e8f6ef; border-left: 4px solid #27ae60; }
+
+        /* Summary dashboard */
+        .summary-box {
+            background: #e6f3ff;
+            border-radius: 12px;
+            padding: 1rem 1.3rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem 2.5rem;
+        }
+        .summary-box .stat { display: flex; flex-direction: column; }
+        .summary-box .stat-val { font-size: 1.4rem; font-weight: 800; color: #0b4f6c; }
+        .summary-box .stat-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; color: #4a7a95; }
+
+        /* Computed field badge */
+        .computed-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #d0eaf5;
+            color: #0b4f6c;
+            padding: 0.1rem 0.5rem;
+            border-radius: 10px;
+            margin-left: 0.4rem;
+            vertical-align: middle;
+        }
+
+        /* Group roster table */
+        .roster-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .roster-table th {
+            background: #0b4f6c;
+            color: white;
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .roster-table td {
+            padding: 0.4rem 0.6rem;
+            border-bottom: 1px solid #d4e0e9;
+            vertical-align: middle;
+        }
+        .roster-table tr:nth-child(even) td { background: #f4f8fc; }
+        .roster-table input, .roster-table select { padding: 0.3rem 0.6rem; font-size: 0.82rem; border-radius: 6px; }
+
+        /* Buttons */
+        button {
+            background: #0b4f6c;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.88rem;
+            transition: 0.2s;
+        }
+        button:hover { background: #093f56; }
+        .btn-secondary { background: #e2edf2; color: #1e4b62; }
+        .btn-secondary:hover { background: #cddee6; }
+        .btn-sm { padding: 0.4rem 1rem; font-size: 0.8rem; border-radius: 20px; }
+        .btn-danger { background: #d1452b; }
+        .btn-danger:hover { background: #b33a22; }
+
+        .no-print { display: inline-block; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .form-container { box-shadow: none; border: none; }
+            .no-print, button, .remove-emp-btn, .toggle-card-btn, #addEmployeeBtn, #addRosterRowBtn { display: none !important; }
+            .employee-card { page-break-inside: avoid; }
+            fieldset { break-inside: avoid; }
+            .employee-card-body { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <div class="form-header">
+        <h1>SJO — Separation Decision Worksheet <span class="internal-badge">INTERNAL USE ONLY</span></h1>
+        <div class="header-meta">
+            <span class="version-badge">v2.0 — Agreement-Ready</span>
+            <small id="lastSaved" style="opacity:0.75;">Last saved: —</small>
+        </div>
+    </div>
+
+    <form id="separationForm">
+
+        <!-- ══════════════════════════════════════════════
+             SECTION 1 — RIF OVERVIEW
+        ══════════════════════════════════════════════ -->
+        <fieldset>
+            <legend>📌 RIF Overview</legend>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="businessReason">Business reason for reduction *</label>
+                    <input type="text" id="businessReason" placeholder="e.g., project completion / economic restructuring / position elimination" required>
+                </div>
+                <div class="form-group">
+                    <label for="decisionalUnit">Decisional unit *</label>
+                    <input type="text" id="decisionalUnit" placeholder="e.g., all field supervisors — Terra-Gen Discovery Well project site">
+                </div>
+                <div class="form-group">
+                    <label for="selectionCriteria">Selection criteria used *</label>
+                    <input type="text" id="selectionCriteria" placeholder="performance, skills, LIFO, seniority, position elimination">
+                </div>
+                <div class="form-group">
+                    <label for="adverseImpact">Adverse Impact Analysis (summary)</label>
+                    <textarea id="adverseImpact" rows="2" placeholder="Summary of demographic review; attach full analysis separately"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="thirdPartyClient">Third-party client implicated? (Terra-Gen or other)</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="thirdPartyClient" value="No" checked> No</label>
+                        <label><input type="radio" name="thirdPartyClient" value="Yes"> Yes</label>
+                    </div>
+                    <input type="text" id="thirdPartyClientName" placeholder="Client name (if yes)" style="margin-top:6px;">
+                    <div class="alert alert-warning" id="thirdPartyAlert" style="display:none; margin-top:6px; font-size:0.82rem;">
+                        ⚠️ <strong>Counsel note:</strong> Template removes Terra-Gen as third-party beneficiary. Confirm before finalizing whether any client enforcement rights must be reinstated (Sections 10, 12, release scope, property return, confidentiality).
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="finalizedDate">Date finalized</label>
+                    <input type="date" id="finalizedDate">
+                </div>
+                <div class="form-group">
+                    <label for="preparedBy">Prepared by</label>
+                    <input type="text" id="preparedBy" placeholder="Name / Role">
+                </div>
+                <div class="form-group">
+                    <label for="approvedBy">Approved by</label>
+                    <input type="text" id="approvedBy" placeholder="Name / Title">
+                </div>
+            </div>
+            <div class="alert alert-info" style="margin-top: 0.5rem;">
+                <strong>Recital note:</strong> Each agreement's Recital will incorporate the business reason, start date, and compensation description. Confirm language before execution.
+            </div>
+        </fieldset>
+
+        <!-- ══════════════════════════════════════════════
+             SECTION 2 — DECISIONAL UNIT & COMPLIANCE
+        ══════════════════════════════════════════════ -->
+        <fieldset>
+            <legend>👥 Decisional Unit & Compliance Triggers</legend>
+            <div class="form-group">
+                <label for="rosterSummary">Decisional Unit Roster (summary — all affected employees, titles, hire dates)</label>
+                <textarea id="rosterSummary" rows="3" placeholder="List all employees considered, including non-selected, for adverse impact and OWBPA group disclosure purposes"></textarea>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>OWBPA group disclosure required?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="owbpaReq" value="Yes" id="owbpaYes"> Yes (group/exit-incentive program)</label>
+                        <label><input type="radio" name="owbpaReq" value="No" id="owbpaNo" checked> No (individual terminations)</label>
+                    </div>
+                    <div class="alert alert-warning" id="owbpaGroupAlert" style="display:none; margin-top:8px; font-size:0.82rem;">
+                        ⚠️ Group program: 45-day consideration period applies to all age-40+ employees. Complete Exhibit C Group Disclosure section below.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Cal-WARN / WARN Act implicated?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="warnImp" value="Yes"> Yes</label>
+                        <label><input type="radio" name="warnImp" value="No" checked> No</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="companyHeadcount">Total company headcount</label>
+                    <input type="number" id="companyHeadcount" placeholder="Total employees">
+                </div>
+                <div class="form-group">
+                    <label for="siteHeadcount">Headcount at site / establishment</label>
+                    <input type="number" id="siteHeadcount" placeholder="Site or location total">
+                </div>
+                <div class="form-group">
+                    <label for="warnWindow">Separations in rolling 30-day window</label>
+                    <input type="number" id="warnWindow" placeholder="# of separations">
+                </div>
+            </div>
+            <div class="alert alert-info" style="font-size:0.82rem;">
+                <strong>WARN thresholds:</strong> Cal-WARN (Lab. Code § 1400): covered establishment (75+ employees), 50+ separations within 30 days. Federal WARN (29 U.S.C. § 2101): 100+ employees, 50+ separations at a single site.
+            </div>
+        </fieldset>
+
+        <!-- ══════════════════════════════════════════════
+             SECTION 3 — COMPANY-WIDE PAYROLL & WORKERS' COMP
+        ══════════════════════════════════════════════ -->
+        <fieldset>
+            <legend>⚙️ Global Payroll, Insurance & Signatory Data</legend>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="workersCompCarrier">Workers' Compensation Carrier (for Exhibit C)</label>
+                    <input type="text" id="workersCompCarrier" placeholder="Carrier name, e.g., State Fund, ICW Group">
+                </div>
+                <div class="form-group">
+                    <label for="workersCompPolicy">Workers' Comp Policy Number</label>
+                    <input type="text" id="workersCompPolicy" placeholder="Policy #">
+                </div>
+                <div class="form-group">
+                    <label for="finalPayMethod">Default final pay delivery method</label>
+                    <select id="finalPayMethod">
+                        <option value="">Select</option>
+                        <option value="direct deposit">Direct deposit</option>
+                        <option value="check">Check (hand-delivered on last day)</option>
+                        <option value="check-mailed">Check (mailed same day)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sjoSignatory">SJO authorized signatory (for agreements)</label>
+                    <input type="text" id="sjoSignatory" placeholder="Full name">
+                </div>
+                <div class="form-group">
+                    <label for="sjoTitle">Title of SJO signatory</label>
+                    <input type="text" id="sjoTitle" placeholder="e.g., Managing Member">
+                </div>
+                <div class="form-group">
+                    <label for="sjoSignatoryEmail">Signatory direct email (for § 13(c) notices)</label>
+                    <input type="email" id="sjoSignatoryEmail" placeholder="e.g., antonio@sjoperators.com">
+                </div>
+                <div class="form-group">
+                    <label for="sjoSignatoryPhone">Signatory direct phone</label>
+                    <input type="tel" id="sjoSignatoryPhone" placeholder="e.g., (661) 555-0100">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label for="sjoNoticeAddress">SJO notice address for § 13(c) (if different from 424 24th St)</label>
+                    <input type="text" id="sjoNoticeAddress" placeholder="Leave blank to use registered address: 424 24th Street Suite 7, Bakersfield, CA 93301">
+                </div>
+                <div class="form-group">
+                    <label for="agreementDeliveryMethod">Agreement delivery method</label>
+                    <select id="agreementDeliveryMethod">
+                        <option value="">Select</option>
+                        <option value="hand-delivered">Hand-delivered at meeting</option>
+                        <option value="certified-mail">Certified mail</option>
+                        <option value="email-pdf">Email PDF + hard copy</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cobraMailDate">COBRA/HIPP notice mailing date</label>
+                    <input type="date" id="cobraMailDate">
+                </div>
+                <div class="form-group">
+                    <label for="adpCorrectionProcessed">ADP payroll correction processed?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="adpCorrectionProcessed" value="Yes"> Yes</label>
+                        <label><input type="radio" name="adpCorrectionProcessed" value="No"> No</label>
+                        <label><input type="radio" name="adpCorrectionProcessed" value="N/A" checked> N/A</label>
+                    </div>
+                </div>
+            </div>
+            <div class="alert alert-info" style="font-size:0.82rem; margin-top:0.5rem;">
+                <strong>SJO entity info (pre-filled in template):</strong> San Joaquin Operators, LLC — 424 24th Street Suite 7, Bakersfield, CA 93301 — (661) 866-0219 — EIN: 92-3450088
+            </div>
+        </fieldset>
+
+        <!-- ══════════════════════════════════════════════
+             SECTION 4 — AFFECTED EMPLOYEES
+        ══════════════════════════════════════════════ -->
+        <fieldset>
+            <legend>🧾 Affected Employees <span id="employeeCount" style="font-size:0.9rem;font-weight:400;color:#2c7da0;">(0)</span></legend>
+
+            <div id="summaryDashboard" class="summary-box">
+                <div class="stat"><span class="stat-val" id="totalEmployees">0</span><span class="stat-label">Total Employees</span></div>
+                <div class="stat"><span class="stat-val" id="over40Count">0</span><span class="stat-label">Age 40+</span></div>
+                <div class="stat"><span class="stat-val" id="under40Count">0</span><span class="stat-label">Under 40</span></div>
+                <div class="stat"><span class="stat-val" id="totalSeverance">$0</span><span class="stat-label">Est. Total Severance</span></div>
+                <div class="stat"><span class="stat-val" id="payrollCorrectionCount">0</span><span class="stat-label">Payroll Corrections</span></div>
+                <div class="stat"><span class="stat-val" id="groupTermCount">0</span><span class="stat-label">Group Program</span></div>
+            </div>
+
+            <div class="alert alert-warning" id="owbpaWarning" style="display:none;">
+                ⚠️ <strong>OWBPA:</strong> One or more employees are age 40+. ADEA release required. Verify: (a) consideration period, (b) 7-day revocation, (c) written advice to consult counsel, (d) disclosure that severance is in addition to amounts otherwise owed.
+            </div>
+            <div class="alert alert-danger" id="adea40Under" style="display:none;">
+                🔴 <strong>Under-40 employees:</strong> ADEA/OWBPA provisions in §§ 2(b)(ii)–(iv) and 6(a) MUST be removed or replaced with a 5-business-day review period. Confirm template version for each under-40 employee.
+            </div>
+
+            <div id="employeeContainer"></div>
+            <button type="button" id="addEmployeeBtn" class="no-print">+ Add Employee</button>
+        </fieldset>
+
+        <!-- ══════════════════════════════════════════════
+             SECTION 5 — FINAL PAY READINESS (GLOBAL)
+        ══════════════════════════════════════════════ -->
+        <fieldset>
+            <legend>💰 Final Pay — Ready for Same-Day Delivery?</legend>
+            <div class="checkbox-group" style="flex-wrap:wrap;">
+                <label><input type="checkbox" id="wagesLastDay"> Wages through last day confirmed</label>
+                <label><input type="checkbox" id="ptoPayout"> PTO payout calculated</label>
+                <label><input type="checkbox" id="groceryAllowance"> Grocery allowance prorated through last day</label>
+                <label><input type="checkbox" id="finalWageStatement"> Final wage statement (IWC Form) ready</label>
+                <label><input type="checkbox" id="correctedWageStatements"> Corrected wage statement(s) per Lab. Code § 226 ready (if payroll correction)</label>
+            </div>
+            <div class="grid-2" style="margin-top:1rem;">
+                <div class="form-group">
+                    <label>Payroll correction — global status</label>
+                    <input type="text" id="payrollCorrectionIssue" placeholder="Describe overall issue, e.g., Jan 2026 exempt salary minimum shortfall">
+                </div>
+                <div class="form-group">
+                    <label>Approximate total correction amount</label>
+                    <input type="text" id="payrollCorrectionAmt" placeholder="$ amount (exact per-employee figures entered below)">
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- ══════════════════════════════════════════════
+             SECTION 6 — PAYROLL AUDIT
+        ══════════════════════════════════════════════ -->
+        <fieldset>
+            <legend>⚖️ Payroll Audit (Compliance Review)</legend>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Exempt employees</label>
+                    <div class="checkbox-group" style="flex-direction:column; align-items:flex-start; gap:0.5rem;">
+                        <label><input type="checkbox" id="weeklyPayReviewed"> Weekly pay reviewed — no week below § 515 threshold</label>
+                        <label><input type="checkbox" id="shortfallIdentified"> Shortfall identified — payroll correction in progress</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nonexempt employees</label>
+                    <div class="checkbox-group" style="flex-direction:column; align-items:flex-start; gap:0.5rem;">
+                        <label><input type="checkbox" id="otReviewed"> OT reviewed (8/40 rule + 7th-day rule)</label>
+                        <label><input type="checkbox" id="mealRestReviewed"> Meal/rest premium claims reviewed</label>
+                        <label><input type="checkbox" id="bonusesIncluded"> Non-discretionary bonuses & allowances in regular rate</label>
+                    </div>
+                    <input type="text" id="nonexemptIssueDetails" placeholder="Describe any wage/hour issue" style="margin-top:8px;">
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- ══════════════════════════════════════════════
+             SECTION 7 — PROPERTY, CARDS & ACCESS
+        ══════════════════════════════════════════════ -->
+        <fieldset>
+            <legend>📱 Property, Cards & Access</legend>
+            <div class="checkbox-group" style="flex-wrap:wrap;">
+                <label><input type="checkbox" id="propLaptop"> Laptop</label>
+                <label><input type="checkbox" id="propPhone"> Phone</label>
+                <label><input type="checkbox" id="propVehicle"> Vehicle (<input type="text" id="vehicleDetails" style="width:130px; display:inline-block; padding:0.2rem 0.5rem;">)</label>
+                <label><input type="checkbox" id="propSafety"> Safety equipment</label>
+                <label><input type="checkbox" id="propDivvy"> Divvy card</label>
+                <label><input type="checkbox" id="propWex"> WEX card</label>
+                <label><input type="checkbox" id="propKeys"> Keys/badges</label>
+                <label><input type="checkbox" id="propTablet"> Tablet/iPad</label>
+                <label><input type="checkbox" id="propCredentials"> Software credentials / passwords</label>
+            </div>
+            <div class="grid-2" style="margin-top:1rem;">
+                <div class="form-group">
+                    <label>Unreconciled charges?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="unreconciled" value="No" checked> No</label>
+                        <label><input type="radio" name="unreconciled" value="Yes"> Yes — details:</label>
+                    </div>
+                    <input type="text" id="unreconciledDetails" placeholder="Card type, amount, description">
+                </div>
+                <div class="form-group">
+                    <label>Cards / access deactivated by</label>
+                    <input type="text" id="cardsDeactivatedBy" placeholder="Name / initials">
+                </div>
+                <div class="form-group">
+                    <label>Company-provided housing or in-kind benefits to wind down?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="inKindBenefits" value="No" checked> No</label>
+                        <label><input type="radio" name="inKindBenefits" value="Yes"> Yes</label>
+                    </div>
+                    <input type="text" id="inKindDetails" placeholder="Describe (housing location, vehicle, allowances)" style="margin-top:6px;">
+                    <div class="alert alert-warning" id="inKindAlert" style="display:none; margin-top:6px; font-size:0.82rem;">
+                        ⚠️ Template removes former Section 1(g) lodging provision. A wind-down clause must be added if any in-kind benefit exists.
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- ══════════════════════════════════════════════
+             SECTION 8 — REQUIRED NOTICES
+        ══════════════════════════════════════════════ -->
+        <fieldset>
+            <legend>📄 Notices — Deliver with Final Pay</legend>
+            <div class="checkbox-group" style="flex-wrap:wrap;">
+                <label><input type="checkbox" id="de2320"> DE 2320 (unemployment insurance pamphlet)</label>
+                <label><input type="checkbox" id="changeRelNotice"> Change-in-Relationship Notice (Exhibit C)</label>
+                <label><input type="checkbox" id="cobraNotice"> COBRA/Cal-COBRA notice (if enrolled in group health)</label>
+                <label><input type="checkbox" id="hippNotice"> HIPP Notice</label>
+                <label><input type="checkbox" id="owbpaExhibitDeliv"> OWBPA Group Disclosure Exhibit (if group program)</label>
+            </div>
+            <div class="form-group" style="margin-top:1rem;">
+                <label>Additional Notes / Accommodations</label>
+                <textarea id="notesField" rows="2" placeholder="Special instructions, ADA accommodations, interpreter needs, etc."></textarea>
+            </div>
+        </fieldset>
+
+        <!-- ══════════════════════════════════════════════
+             SECTION 9 — GROUP OWBPA EXHIBIT C DATA
+             (Shown/highlighted when group program selected)
+        ══════════════════════════════════════════════ -->
+        <fieldset id="groupOwbpaFieldset">
+            <legend>📋 Group OWBPA Exhibit Data (29 C.F.R. § 1625.22)</legend>
+            <div class="alert alert-info" style="margin-bottom: 1rem; font-size: 0.83rem;">
+                <strong>Required when:</strong> An exit incentive or group termination program offers separation agreements to 2+ employees simultaneously. Must disclose: job titles &amp; ages of all eligible employees, job titles &amp; ages of all non-eligible employees in the decisional unit, time limits, and eligibility factors. 45-day consideration period required for all over-40 participants.
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="owbpaDecisionalUnit">OWBPA decisional unit description</label>
+                    <input type="text" id="owbpaDecisionalUnit" placeholder="e.g., All field personnel — Terra-Gen Discovery Well site">
+                </div>
+                <div class="form-group">
+                    <label for="owbpaEligibilityFactors">Eligibility factors</label>
+                    <input type="text" id="owbpaEligibilityFactors" placeholder="e.g., All employees at site with position eliminated effective [DATE]">
+                </div>
+                <div class="form-group">
+                    <label for="owbpaTimeLimits">Time limits</label>
+                    <input type="text" id="owbpaTimeLimits" placeholder="e.g., Program offered [DATE] through [DATE]; 45-day review; 7-day revocation">
+                </div>
+            </div>
+            <div style="margin-top: 1rem;">
+                <div class="sub-section-title">Decisional Unit Roster for Group Exhibit</div>
+                <div class="alert alert-warning" style="font-size:0.82rem; margin-bottom: 0.75rem;">
+                    List <strong>all</strong> employees in the decisional unit — both selected and non-selected — with title and age. This is the OWBPA group disclosure exhibit.
+                </div>
+                <table class="roster-table" id="owbpaRosterTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Employee Name</th>
+                            <th>Job Title</th>
+                            <th>Age</th>
+                            <th>Selected for Separation</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="owbpaRosterBody">
+                        <!-- rows added dynamically -->
+                    </tbody>
+                </table>
+                <button type="button" id="addRosterRowBtn" class="btn-sm no-print" style="margin-top:0.75rem;">+ Add Row</button>
+            </div>
+        </fieldset>
+
+        <!-- ══════════════════════════════════════════════
+             SECTION 10 — DOCUMENTS CHECKLIST
+        ══════════════════════════════════════════════ -->
+        <fieldset>
+            <legend>📑 Documents to Prepare & Internal Signoff</legend>
+            <div class="checkbox-group" style="flex-wrap:wrap;">
+                <label><input type="checkbox" id="docSepAgree"> Separation agreements (one per employee)</label>
+                <label><input type="checkbox" id="docOwbpaExhibit"> OWBPA Group Disclosure Exhibit (if applicable)</label>
+                <label><input type="checkbox" id="docFinalPayCalc"> Final pay calculation (Exhibit B)</label>
+                <label><input type="checkbox" id="docPayCorrMemo"> Payroll correction memo + corrected wage statement</label>
+                <label><input type="checkbox" id="docPropReturn"> Property return checklist (per employee)</label>
+                <label><input type="checkbox" id="docChangeRelNotice"> Change-in-Relationship Notice (Exhibit C, per employee)</label>
+                <label><input type="checkbox" id="docCobraNotice"> COBRA/HIPP notice (hard copy, per enrolled employee)</label>
+                <label><input type="checkbox" id="docDe2320"> DE 2320 (per employee)</label>
+                <label><input type="checkbox" id="docInternalSignoff"> Internal approval record / signoff</label>
+            </div>
+        </fieldset>
+
+        <!-- Action Buttons -->
+        <div class="no-print" style="margin-top:2rem;text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <button type="button" id="saveDraftBtn">💾 Save Draft</button>
+            <button type="button" id="loadDraftBtn" class="btn-secondary">📂 Load Draft</button>
+            <button type="button" id="printBtn">🖨️ Print / Save as PDF</button>
+            <button type="button" id="exportJsonBtn" class="btn-secondary">📋 Export JSON</button>
+            <button type="button" id="resetBtn" class="btn-secondary">⟳ Reset Form</button>
+        </div>
+    </form>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// EMPLOYEE DATA MODEL
+// ═══════════════════════════════════════════════════
+let employees = [];
+
+const defaultEmployee = () => ({
+    // Identity & Role
+    name: '', salutation: 'Mr.', title: '', site: '', exemptStatus: '',
+    // Address
+    address1: '', address2: '',
+    // Employment History
+    startDate: '', compType: 'Salary', annualSalary: '', hourlyRate: '',
+    // Separation Timeline
+    dob: '', noticeDate: '', adminLeave: '', lastDay: '', agreementDeliveryDate: '',
+    reviewPeriodType: '', reviewDeadline: '', signatureDate: '', revocationDeadline: '', effectiveDate: '',
+    // Final Pay
+    hoursWorked: '', ptoPayout: '', finalWagesAmount: '', finalPayMethodEmp: '',
+    // Payroll Correction
+    payrollCorrection: 'No', correctionAmount: '', correctionPayPeriods: '', correctionPaymentDate: '',
+    // Severance
+    severance: 0, severanceWords: '', severanceMonths: '', sevStruct: 'Lump sum',
+    // Benefits & Insurance
+    healthcareEnrolled: 'No', ssnLast4: '', outstandingExpenses: 'No', expenseDetails: '',
+    // Agreement Type
+    terminationType: 'Individual',
+    // Misc
+    notes: '',
+    // Contact
+    empPhone: '', empEmail: '', empContactPref: '', empLanguage: ''
+});
+
+// ═══════════════════════════════════════════════════
+// UTILITY FUNCTIONS
+// ═══════════════════════════════════════════════════
+function calculateAge(dobStr) {
+    if (!dobStr) return null;
+    const birth = new Date(dobStr);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+    return age;
+}
+
+function addBusinessDays(dateStr, days) {
+    if (!dateStr) return '';
+    let date = new Date(dateStr);
+    let count = 0;
+    while (count < days) {
+        date.setDate(date.getDate() + 1);
+        const dow = date.getDay();
+        if (dow !== 0 && dow !== 6) count++;
+    }
+    return date.toISOString().slice(0, 10);
+}
+
+function addCalendarDays(dateStr, days) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    date.setDate(date.getDate() + days);
+    return date.toISOString().slice(0, 10);
+}
+
+function formatDate(isoStr) {
+    if (!isoStr) return '';
+    const [y, m, d] = isoStr.split('-');
+    return `${m}/${d}/${y}`;
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+}
+
+function getReviewPeriodType(emp) {
+    const age = calculateAge(emp.dob);
+    const isGroup = emp.terminationType === 'Group';
+    if (age === null) return '';
+    if (age < 40) return 'Under 40 (5 business days)';
+    if (isGroup) return '40+ Group program (45 calendar days + 7-day revocation)';
+    return '40+ Individual (21 calendar days + 7-day revocation)';
+}
+
+function computeDates(emp) {
+    const age = calculateAge(emp.dob);
+    const delivDate = emp.agreementDeliveryDate || emp.noticeDate;
+    let reviewDeadline = '', revocationDeadline = '', effectiveDate = '';
+
+    if (age !== null && delivDate) {
+        if (age < 40) {
+            reviewDeadline = addBusinessDays(delivDate, 5);
+        } else if (emp.terminationType === 'Group') {
+            reviewDeadline = addCalendarDays(delivDate, 45);
+        } else {
+            reviewDeadline = addCalendarDays(delivDate, 21);
+        }
+    }
+
+    if (emp.signatureDate) {
+        revocationDeadline = addCalendarDays(emp.signatureDate, 7);
+        effectiveDate = addCalendarDays(emp.signatureDate, 7);
+    }
+
+    return { reviewDeadline, revocationDeadline, effectiveDate };
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER EMPLOYEE CARDS
+// ═══════════════════════════════════════════════════
+function renderEmployees() {
+    const container = document.getElementById('employeeContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    employees.forEach((emp, idx) => {
+        const age = calculateAge(emp.dob);
+        const ageLabel = age !== null ? `Age ${age}` : '';
+        const adea = age !== null && age >= 40;
+        const computed = computeDates(emp);
+        const reviewType = getReviewPeriodType(emp);
+
+        const card = document.createElement('div');
+        card.className = 'employee-card';
+        card.innerHTML = `
+            <div class="employee-card-header" onclick="toggleCard(${idx})">
+                <span>
+                    <span class="emp-label">${escapeHtml(emp.name) || 'New Employee'}</span>
+                    ${ageLabel ? `<span class="emp-badge">${ageLabel}</span>` : ''}
+                    ${adea ? '<span class="emp-badge" style="background:rgba(214,165,0,0.35);">ADEA</span>' : '<span class="emp-badge" style="background:rgba(0,180,0,0.25);">Under 40</span>'}
+                    ${emp.terminationType === 'Group' ? '<span class="emp-badge" style="background:rgba(200,100,0,0.35);">Group Program</span>' : ''}
+                </span>
+                <div class="header-actions">
+                    <span class="toggle-card-btn" id="toggleLabel${idx}">▲ Collapse</span>
+                    <button type="button" class="remove-emp-btn" onclick="event.stopPropagation(); removeEmployee(${idx})">Remove</button>
+                </div>
+            </div>
+            <div class="employee-card-body" id="cardBody${idx}">
+
+                <!-- ── SECTION A: Identity & Address ── -->
+                <div class="sub-section">
+                    <div class="sub-section-title">A · Identity, Role & Address</div>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Salutation</label>
+                            <select data-field="salutation" data-idx="${idx}">
+                                <option value="Mr." ${emp.salutation === 'Mr.' ? 'selected' : ''}>Mr.</option>
+                                <option value="Ms." ${emp.salutation === 'Ms.' ? 'selected' : ''}>Ms.</option>
+                                <option value="Mx." ${emp.salutation === 'Mx.' ? 'selected' : ''}>Mx.</option>
+                                <option value="Dr." ${emp.salutation === 'Dr.' ? 'selected' : ''}>Dr.</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Full Legal Name (Last, First MI) *</label>
+                            <input type="text" data-field="name" data-idx="${idx}" value="${escapeHtml(emp.name)}" placeholder="Last, First Middle">
+                        </div>
+                        <div class="form-group">
+                            <label>Job Title</label>
+                            <input type="text" data-field="title" data-idx="${idx}" value="${escapeHtml(emp.title)}" placeholder="Job title">
+                        </div>
+                        <div class="form-group">
+                            <label>Site / Location</label>
+                            <input type="text" data-field="site" data-idx="${idx}" value="${escapeHtml(emp.site)}" placeholder="Project site or location">
+                        </div>
+                        <div class="form-group">
+                            <label>Exempt / Nonexempt</label>
+                            <select data-field="exemptStatus" data-idx="${idx}">
+                                <option value="">Select</option>
+                                <option value="Exempt" ${emp.exemptStatus === 'Exempt' ? 'selected' : ''}>Exempt (Salaried)</option>
+                                <option value="Nonexempt" ${emp.exemptStatus === 'Nonexempt' ? 'selected' : ''}>Nonexempt (Hourly)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Home Address Line 1 (for cover letter &amp; Exhibit C) *</label>
+                            <input type="text" data-field="address1" data-idx="${idx}" value="${escapeHtml(emp.address1)}" placeholder="Street address">
+                        </div>
+                        <div class="form-group">
+                            <label>Address Line 2</label>
+                            <input type="text" data-field="address2" data-idx="${idx}" value="${escapeHtml(emp.address2)}" placeholder="City, State ZIP">
+                        </div>
+                        <div class="form-group">
+                            <label>SSN Last 4 Digits (Exhibit C only)</label>
+                            <input type="text" data-field="ssnLast4" data-idx="${idx}" value="${escapeHtml(emp.ssnLast4)}" placeholder="XXXX" maxlength="4">
+                        </div>
+                        <div class="form-group">
+                            <label>Employee Phone (§ 13(c) notices &amp; follow-up)</label>
+                            <input type="tel" data-field="empPhone" data-idx="${idx}" value="${escapeHtml(emp.empPhone || '')}" placeholder="(xxx) xxx-xxxx">
+                        </div>
+                        <div class="form-group">
+                            <label>Employee Personal Email (§ 13(c) notices)</label>
+                            <input type="email" data-field="empEmail" data-idx="${idx}" value="${escapeHtml(emp.empEmail || '')}" placeholder="Personal — not SJO work account">
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred delivery method</label>
+                            <select data-field="empContactPref" data-idx="${idx}">
+                                <option value="">Select</option>
+                                <option value="In-person meeting" ${emp.empContactPref === 'In-person meeting' ? 'selected' : ''}>In-person meeting</option>
+                                <option value="Phone + email" ${emp.empContactPref === 'Phone + email' ? 'selected' : ''}>Phone + email</option>
+                                <option value="Certified mail" ${emp.empContactPref === 'Certified mail' ? 'selected' : ''}>Certified mail</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Language / interpreter needed?</label>
+                            <input type="text" data-field="empLanguage" data-idx="${idx}" value="${escapeHtml(emp.empLanguage || '')}" placeholder="e.g., Spanish — interpreter arranged">
+                        </div>
+                    </div>
+                    <div class="alert alert-info" style="font-size:0.8rem; margin-top:0.5rem;">
+                        <strong>§ 13(c) notice reminder:</strong> OWBPA revocation must be delivered in writing to SJO before the 7-day period expires. Ensure the employee receives the signatory's direct contact details at agreement delivery.
+                    </div>
+                </div>
+
+                <!-- ── SECTION B: Employment History & Compensation ── -->
+                <div class="sub-section">
+                    <div class="sub-section-title">B · Employment History &amp; Compensation</div>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Start / Hire Date *</label>
+                            <input type="date" data-field="startDate" data-idx="${idx}" value="${emp.startDate || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Compensation Type</label>
+                            <select data-field="compType" data-idx="${idx}">
+                                <option value="Salary" ${emp.compType === 'Salary' ? 'selected' : ''}>Salary (Exempt)</option>
+                                <option value="Hourly" ${emp.compType === 'Hourly' ? 'selected' : ''}>Hourly (Nonexempt)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Annual Base Salary ($) (for recital &amp; Agreement § 1(a))</label>
+                            <input type="number" step="0.01" data-field="annualSalary" data-idx="${idx}" value="${emp.annualSalary || ''}" placeholder="e.g., 65000">
+                        </div>
+                        <div class="form-group">
+                            <label>Hourly Rate (if nonexempt, for Exhibit C)</label>
+                            <input type="number" step="0.01" data-field="hourlyRate" data-idx="${idx}" value="${emp.hourlyRate || ''}" placeholder="$/hour">
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Compensation Description (for Agreement recital &amp; § 1(a)) *</label>
+                            <input type="text" data-field="compDescription" data-idx="${idx}" value="${escapeHtml(emp.compDescription || '')}" placeholder='e.g., "a base salary of $65,000/year" or "at $35.00/hour"'>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── SECTION C: Separation Timeline ── -->
+                <div class="sub-section">
+                    <div class="sub-section-title">C · Separation Timeline &amp; OWBPA Mechanics</div>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Date of Birth (for age/ADEA)</label>
+                            <input type="date" data-field="dob" data-idx="${idx}" value="${emp.dob || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Notice / Meeting Date</label>
+                            <input type="date" data-field="noticeDate" data-idx="${idx}" value="${emp.noticeDate || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Agreement Delivery Date * <span class="computed-badge">Sets review clock</span></label>
+                            <input type="date" data-field="agreementDeliveryDate" data-idx="${idx}" value="${emp.agreementDeliveryDate || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Admin Leave Begins</label>
+                            <input type="date" data-field="adminLeave" data-idx="${idx}" value="${emp.adminLeave || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Day of Employment (Separation Date) *</label>
+                            <input type="date" data-field="lastDay" data-idx="${idx}" value="${emp.lastDay || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Termination Type</label>
+                            <select data-field="terminationType" data-idx="${idx}">
+                                <option value="Individual" ${emp.terminationType === 'Individual' ? 'selected' : ''}>Individual (21-day if 40+)</option>
+                                <option value="Group" ${emp.terminationType === 'Group' ? 'selected' : ''}>Group/Exit-Incentive Program (45-day if 40+)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-3" style="margin-top:0.5rem;">
+                        <div class="form-group">
+                            <label>Review Period Type <span class="computed-badge">Auto</span></label>
+                            <input type="text" readonly value="${escapeHtml(reviewType)}" style="background:#f0f6fa; color:#4a7a95;">
+                        </div>
+                        <div class="form-group">
+                            <label>Review Deadline <span class="computed-badge">Auto</span></label>
+                            <input type="text" readonly id="reviewDeadline_${idx}" value="${formatDate(computed.reviewDeadline)}" style="background:#f0f6fa; color:#0b4f6c; font-weight:600;">
+                        </div>
+                        <div class="form-group">
+                            <label>Date Signed by Employee</label>
+                            <input type="date" data-field="signatureDate" data-idx="${idx}" value="${emp.signatureDate || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label>Revocation Period Expires <span class="computed-badge">Auto (+7 days)</span></label>
+                            <input type="text" readonly id="revocationDeadline_${idx}" value="${formatDate(computed.revocationDeadline)}" style="background:#f0f6fa; color:#0b4f6c; font-weight:600;">
+                        </div>
+                        <div class="form-group">
+                            <label>Effective Date <span class="computed-badge">= Revocation expiry</span></label>
+                            <input type="text" readonly id="effectiveDate_${idx}" value="${formatDate(computed.effectiveDate)}" style="background:#e8f3fb; color:#0b4f6c; font-weight:700;">
+                        </div>
+                    </div>
+                    ${adea ? `
+                    <div class="alert alert-warning" style="margin-top:0.5rem; font-size:0.82rem;">
+                        ✅ <strong>ADEA employee:</strong> Verify agreement includes 21-day (or 45-day if group) consideration period, 7-day revocation, § 626(f) disclosure, and written advice to consult counsel. Confirm consideration is in addition to amounts otherwise owed.
+                    </div>` : `
+                    <div class="alert alert-info" style="margin-top:0.5rem; font-size:0.82rem;">
+                        ℹ️ <strong>Under-40 employee:</strong> Remove ADEA/OWBPA provisions from agreement (§§ 2(b)(ii)–(iv) and 6(a)). Replace with 5-business-day review period.
+                    </div>`}
+                </div>
+
+                <!-- ── SECTION D: Final Pay ── -->
+                <div class="sub-section">
+                    <div class="sub-section-title">D · Final Pay (Exhibit B Data)</div>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Hours Worked Through Separation Date</label>
+                            <input type="number" step="0.01" data-field="hoursWorked" data-idx="${idx}" value="${emp.hoursWorked || ''}" placeholder="Hours (nonexempt) or N/A">
+                        </div>
+                        <div class="form-group">
+                            <label>PTO Accrued Hours</label>
+                            <input type="number" step="0.01" data-field="ptoPayout" data-idx="${idx}" value="${emp.ptoPayout || ''}" placeholder="Hours">
+                        </div>
+                        <div class="form-group">
+                            <label>PTO Payout Amount ($)</label>
+                            <input type="number" step="0.01" data-field="ptoDollarAmount" data-idx="${idx}" value="${emp.ptoDollarAmount || ''}" placeholder="Dollar amount">
+                        </div>
+                        <div class="form-group">
+                            <label>Final Wages Amount ($ total wages paid)</label>
+                            <input type="number" step="0.01" data-field="finalWagesAmount" data-idx="${idx}" value="${emp.finalWagesAmount || ''}" placeholder="$">
+                        </div>
+                        <div class="form-group">
+                            <label>Final Pay Delivery Method</label>
+                            <select data-field="finalPayMethodEmp" data-idx="${idx}">
+                                <option value="">Select / use global default</option>
+                                <option value="direct deposit" ${emp.finalPayMethodEmp === 'direct deposit' ? 'selected' : ''}>Direct deposit</option>
+                                <option value="check" ${emp.finalPayMethodEmp === 'check' ? 'selected' : ''}>Check (hand-delivered)</option>
+                                <option value="check-mailed" ${emp.finalPayMethodEmp === 'check-mailed' ? 'selected' : ''}>Check (mailed same day)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Payroll Correction Toggle -->
+                    <div style="margin-top: 0.75rem;">
+                        <label style="display:flex; align-items:center; gap:0.5rem; font-weight:700; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.5px; color:#0b4f6c; cursor:pointer;">
+                            <input type="checkbox" data-field="payrollCorrection" data-idx="${idx}" ${emp.payrollCorrection === 'Yes' ? 'checked' : ''} style="width:1rem;height:1rem;"> 
+                            Payroll Correction Applies to This Employee (§ 1(c) / Exhibit B Item 4)
+                        </label>
+                    </div>
+                    <div class="conditional-fields" id="correctionFields_${idx}" style="${emp.payrollCorrection === 'Yes' ? '' : 'display:none;'}">
+                        <div class="alert alert-warning" style="font-size:0.8rem; margin-bottom:0.75rem;">
+                            Required fields for Agreement § 1(c) and Exhibit B. Confirm ADP has processed correction and corrected wage statement (Lab. Code § 226) will be issued.
+                        </div>
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Correction Amount ($) *</label>
+                                <input type="number" step="0.01" data-field="correctionAmount" data-idx="${idx}" value="${emp.correctionAmount || ''}" placeholder="Exact dollar amount">
+                            </div>
+                            <div class="form-group">
+                                <label>Pay Period(s) at Issue *</label>
+                                <input type="text" data-field="correctionPayPeriods" data-idx="${idx}" value="${escapeHtml(emp.correctionPayPeriods || '')}" placeholder="e.g., 12/01/2025 – 12/31/2025">
+                            </div>
+                            <div class="form-group">
+                                <label>Correction Payment Date *</label>
+                                <input type="date" data-field="correctionPaymentDate" data-idx="${idx}" value="${emp.correctionPaymentDate || ''}">
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Nature of Error (for § 1(c) description)</label>
+                                <input type="text" data-field="correctionDescription" data-idx="${idx}" value="${escapeHtml(emp.correctionDescription || '')}" placeholder='e.g., "failure to satisfy California exempt salary minimum effective January 1, 2026"'>
+                            </div>
+                            <div class="form-group">
+                                <label>Corrected Wage Statement Issued?</label>
+                                <select data-field="correctedWageStatement" data-idx="${idx}">
+                                    <option value="">Select</option>
+                                    <option value="Yes" ${emp.correctedWageStatement === 'Yes' ? 'selected' : ''}>Yes</option>
+                                    <option value="No - pending" ${emp.correctedWageStatement === 'No - pending' ? 'selected' : ''}>No — pending</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── SECTION E: Severance ── -->
+                <div class="sub-section">
+                    <div class="sub-section-title">E · Severance (Agreement § 2(a) &amp; Exhibit B)</div>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Severance Amount ($) *</label>
+                            <input type="number" step="0.01" data-field="severance" data-idx="${idx}" value="${emp.severance || ''}" placeholder="Figures">
+                        </div>
+                        <div class="form-group">
+                            <label>Severance Amount in Words *</label>
+                            <input type="text" data-field="severanceWords" data-idx="${idx}" value="${escapeHtml(emp.severanceWords || '')}" placeholder='e.g., "Twelve Thousand Five Hundred"'>
+                        </div>
+                        <div class="form-group">
+                            <label>Months of Base Salary Represented *</label>
+                            <input type="text" data-field="severanceMonths" data-idx="${idx}" value="${escapeHtml(emp.severanceMonths || '')}" placeholder='e.g., "two (2)"'>
+                        </div>
+                        <div class="form-group">
+                            <label>Severance Structure</label>
+                            <select data-field="sevStruct" data-idx="${idx}">
+                                <option value="Lump sum" ${emp.sevStruct === 'Lump sum' ? 'selected' : ''}>Lump sum (within 30 days of Effective Date)</option>
+                                <option value="Salary continuation" ${emp.sevStruct === 'Salary continuation' ? 'selected' : ''}>Salary continuation</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── SECTION F: Benefits & Property ── -->
+                <div class="sub-section">
+                    <div class="sub-section-title">F · Benefits, Property &amp; Outstanding Items</div>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label>Enrolled in Group Health Insurance?</label>
+                            <select data-field="healthcareEnrolled" data-idx="${idx}">
+                                <option value="Yes" ${emp.healthcareEnrolled === 'Yes' ? 'selected' : ''}>Yes — COBRA notice required</option>
+                                <option value="No" ${emp.healthcareEnrolled === 'No' ? 'selected' : ''}>No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Outstanding Business Expenses? (Lab. Code § 2802)</label>
+                            <select data-field="outstandingExpenses" data-idx="${idx}">
+                                <option value="No" ${emp.outstandingExpenses === 'No' ? 'selected' : ''}>No</option>
+                                <option value="Yes" ${emp.outstandingExpenses === 'Yes' ? 'selected' : ''}>Yes — detail below</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Expense Detail (if yes)</label>
+                            <input type="text" data-field="expenseDetails" data-idx="${idx}" value="${escapeHtml(emp.expenseDetails || '')}" placeholder="Amount, description, documentation status">
+                        </div>
+                    </div>
+                    <div style="margin-top:0.5rem;">
+                        <label style="font-weight:700; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.5px; color:#2c5a74;">Property to Return (check all that apply)</label>
+                        <div class="checkbox-group" style="flex-wrap:wrap; margin-top:0.4rem;">
+                            <label><input type="checkbox" data-field="propVehicle" data-idx="${idx}" ${emp.propVehicle ? 'checked' : ''}> Vehicle / Keys</label>
+                            <label><input type="checkbox" data-field="propLaptop" data-idx="${idx}" ${emp.propLaptop ? 'checked' : ''}> Laptop</label>
+                            <label><input type="checkbox" data-field="propTablet" data-idx="${idx}" ${emp.propTablet ? 'checked' : ''}> Tablet / iPad</label>
+                            <label><input type="checkbox" data-field="propPhone" data-idx="${idx}" ${emp.propPhone ? 'checked' : ''}> Phone</label>
+                            <label><input type="checkbox" data-field="propDivvy" data-idx="${idx}" ${emp.propDivvy ? 'checked' : ''}> Divvy card</label>
+                            <label><input type="checkbox" data-field="propWex" data-idx="${idx}" ${emp.propWex ? 'checked' : ''}> WEX card</label>
+                            <label><input type="checkbox" data-field="propBadge" data-idx="${idx}" ${emp.propBadge ? 'checked' : ''}> Access badge / keys</label>
+                            <label><input type="checkbox" data-field="propSafety" data-idx="${idx}" ${emp.propSafety ? 'checked' : ''}> Safety equipment</label>
+                        </div>
+                        <div class="form-group" style="margin-top:0.75rem;">
+                            <label>Specific Property Items (for § 4 — list exact items)</label>
+                            <input type="text" data-field="propertyList" data-idx="${idx}" value="${escapeHtml(emp.propertyList || '')}" placeholder='e.g., "2021 Ford F-250, VIN ___; Lenovo ThinkPad SN ___; Divvy card x-1234"'>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── SECTION G: Notes ── -->
+                <div class="sub-section">
+                    <div class="sub-section-title">G · Notes &amp; Flags for This Employee</div>
+                    <textarea data-field="notes" data-idx="${idx}" rows="2" placeholder="Special instructions, accommodation needs, outstanding questions, drafting flags">${escapeHtml(emp.notes || '')}</textarea>
+                </div>
+
+            </div><!-- end card body -->
+        `;
+        container.appendChild(card);
+    });
+
+    attachEmployeeListeners();
+    updateSummaryAndWarnings();
+}
+
+// ═══════════════════════════════════════════════════
+// TOGGLE CARD OPEN/CLOSED
+// ═══════════════════════════════════════════════════
+function toggleCard(idx) {
+    const body = document.getElementById(`cardBody${idx}`);
+    const label = document.getElementById(`toggleLabel${idx}`);
+    if (!body) return;
+    if (body.style.display === 'none') {
+        body.style.display = 'block';
+        label.textContent = '▲ Collapse';
+    } else {
+        body.style.display = 'none';
+        label.textContent = '▼ Expand';
+    }
+}
+
+// ═══════════════════════════════════════════════════
+// EVENT LISTENERS FOR EMPLOYEE FIELDS
+// ═══════════════════════════════════════════════════
+function attachEmployeeListeners() {
+    document.querySelectorAll('.employee-card-body input, .employee-card-body select, .employee-card-body textarea').forEach(el => {
+        el.removeEventListener('change', handleEmpFieldChange);
+        el.addEventListener('change', handleEmpFieldChange);
+    });
+}
+
+function handleEmpFieldChange(e) {
+    const el = e.target;
+    const idx = parseInt(el.getAttribute('data-idx'));
+    const field = el.getAttribute('data-field');
+    if (isNaN(idx) || !field || !employees[idx]) return;
+
+    if (el.type === 'checkbox') {
+        employees[idx][field] = el.checked ? 'Yes' : 'No';
+        // Special case: payroll correction checkbox shows/hides panel
+        if (field === 'payrollCorrection') {
+            const panel = document.getElementById(`correctionFields_${idx}`);
+            if (panel) panel.style.display = el.checked ? 'block' : 'none';
+        }
+    } else {
+        employees[idx][field] = el.value;
+    }
+
+    // Recompute dates when relevant fields change
+    if (['dob','agreementDeliveryDate','noticeDate','terminationType','signatureDate'].includes(field)) {
+        const computed = computeDates(employees[idx]);
+        const rdEl = document.getElementById(`reviewDeadline_${idx}`);
+        const rvEl = document.getElementById(`revocationDeadline_${idx}`);
+        const effEl = document.getElementById(`effectiveDate_${idx}`);
+        if (rdEl) rdEl.value = formatDate(computed.reviewDeadline);
+        if (rvEl) rvEl.value = formatDate(computed.revocationDeadline);
+        if (effEl) effEl.value = formatDate(computed.effectiveDate);
+    }
+
+    updateSummaryAndWarnings();
+}
+
+function removeEmployee(idx) {
+    if (confirm(`Remove ${employees[idx].name || 'this employee'}?`)) {
+        employees.splice(idx, 1);
+        renderEmployees();
+    }
+}
+
+// ═══════════════════════════════════════════════════
+// SUMMARY DASHBOARD + WARNINGS
+// ═══════════════════════════════════════════════════
+function updateSummaryAndWarnings() {
+    let over40 = 0, under40 = 0, totalSev = 0, correctionCount = 0, groupCount = 0;
+    employees.forEach(emp => {
+        const age = calculateAge(emp.dob);
+        if (age !== null) { if (age >= 40) over40++; else under40++; }
+        const sev = parseFloat(emp.severance);
+        if (!isNaN(sev)) totalSev += sev;
+        if (emp.payrollCorrection === 'Yes') correctionCount++;
+        if (emp.terminationType === 'Group') groupCount++;
+    });
+
+    const total = employees.length;
+    document.getElementById('totalEmployees').innerText = total;
+    document.getElementById('over40Count').innerText = over40;
+    document.getElementById('under40Count').innerText = under40;
+    document.getElementById('totalSeverance').innerText = `$${totalSev.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+    document.getElementById('payrollCorrectionCount').innerText = correctionCount;
+    document.getElementById('groupTermCount').innerText = groupCount;
+    document.getElementById('employeeCount').innerText = `(${total})`;
+
+    const owbpaSelected = document.querySelector('input[name="owbpaReq"]:checked')?.value === 'Yes';
+    document.getElementById('owbpaWarning').style.display = (over40 > 0) ? 'block' : 'none';
+    document.getElementById('adea40Under').style.display = (under40 > 0) ? 'block' : 'none';
+    document.getElementById('owbpaGroupAlert').style.display = owbpaSelected ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════════
+// GROUP OWBPA ROSTER
+// ═══════════════════════════════════════════════════
+let rosterRows = [];
+
+function renderRosterTable() {
+    const tbody = document.getElementById('owbpaRosterBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    rosterRows.forEach((row, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td><input type="text" value="${escapeHtml(row.name)}" data-roster-field="name" data-roster-idx="${i}" placeholder="Name"></td>
+            <td><input type="text" value="${escapeHtml(row.title)}" data-roster-field="title" data-roster-idx="${i}" placeholder="Job title"></td>
+            <td><input type="number" value="${row.age || ''}" data-roster-field="age" data-roster-idx="${i}" placeholder="Age" style="width:70px;"></td>
+            <td>
+                <select data-roster-field="selected" data-roster-idx="${i}">
+                    <option value="Yes" ${row.selected === 'Yes' ? 'selected' : ''}>Yes — Selected</option>
+                    <option value="No" ${row.selected === 'No' ? 'selected' : ''}>No — Not Selected</option>
+                </select>
+            </td>
+            <td><button type="button" class="btn-sm btn-danger no-print" onclick="removeRosterRow(${i})">✕</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+    document.querySelectorAll('[data-roster-field]').forEach(el => {
+        el.addEventListener('change', e => {
+            const idx = parseInt(e.target.getAttribute('data-roster-idx'));
+            const field = e.target.getAttribute('data-roster-field');
+            if (!isNaN(idx) && field) rosterRows[idx][field] = e.target.value;
+        });
+    });
+}
+
+function removeRosterRow(idx) {
+    rosterRows.splice(idx, 1);
+    renderRosterTable();
+}
+
+document.getElementById('addRosterRowBtn')?.addEventListener('click', () => {
+    rosterRows.push({ name: '', title: '', age: '', selected: 'Yes' });
+    renderRosterTable();
+});
+
+// ═══════════════════════════════════════════════════
+// GLOBAL RADIO LISTENERS
+// ═══════════════════════════════════════════════════
+document.querySelectorAll('input[name="owbpaReq"]').forEach(r => r.addEventListener('change', () => {
+    const yes = document.querySelector('input[name="owbpaReq"]:checked')?.value === 'Yes';
+    document.getElementById('owbpaGroupAlert').style.display = yes ? 'block' : 'none';
+    updateSummaryAndWarnings();
+}));
+
+document.querySelectorAll('input[name="thirdPartyClient"]').forEach(r => r.addEventListener('change', () => {
+    const yes = document.querySelector('input[name="thirdPartyClient"]:checked')?.value === 'Yes';
+    document.getElementById('thirdPartyAlert').style.display = yes ? 'block' : 'none';
+}));
+
+document.querySelectorAll('input[name="inKindBenefits"]').forEach(r => r.addEventListener('change', () => {
+    const yes = document.querySelector('input[name="inKindBenefits"]:checked')?.value === 'Yes';
+    document.getElementById('inKindAlert').style.display = yes ? 'block' : 'none';
+}));
+
+// ═══════════════════════════════════════════════════
+// ADD EMPLOYEE
+// ═══════════════════════════════════════════════════
+document.getElementById('addEmployeeBtn')?.addEventListener('click', () => {
+    employees.push(defaultEmployee());
+    renderEmployees();
+    // Scroll to new card
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.employee-card');
+        if (cards.length) cards[cards.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+});
+
+// ═══════════════════════════════════════════════════
+// COLLECT / POPULATE FORM DATA
+// ═══════════════════════════════════════════════════
+function collectAllFormData() {
+    const formEls = document.querySelectorAll('#separationForm input, #separationForm select, #separationForm textarea');
+    const data = { employees, rosterRows };
+    formEls.forEach(el => {
+        if (el.getAttribute('data-field') || el.getAttribute('data-roster-field')) return; // handled separately
+        if (el.type === 'radio') { if (el.checked && el.name) data[el.name] = el.value; }
+        else if (el.type === 'checkbox') { if (el.id) data[el.id] = el.checked; }
+        else if (el.id && !el.readOnly) { data[el.id] = el.value; }
+    });
+    return data;
+}
+
+function populateFromData(data) {
+    if (!data) return;
+    if (data.employees && Array.isArray(data.employees)) { employees = data.employees; renderEmployees(); }
+    if (data.rosterRows && Array.isArray(data.rosterRows)) { rosterRows = data.rosterRows; renderRosterTable(); }
+    for (let [key, val] of Object.entries(data)) {
+        if (key === 'employees' || key === 'rosterRows') continue;
+        const el = document.getElementById(key);
+        if (el) {
+            if (el.type === 'checkbox') el.checked = val === true;
+            else if (el.type === 'radio') { const r = document.querySelector(`input[name="${key}"][value="${val}"]`); if (r) r.checked = true; }
+            else el.value = val;
+        } else {
+            const rg = document.querySelector(`input[name="${key}"]`);
+            if (rg?.type === 'radio') { const r = document.querySelector(`input[name="${key}"][value="${val}"]`); if (r) r.checked = true; }
+        }
+    }
+    updateSummaryAndWarnings();
+}
+
+// ═══════════════════════════════════════════════════
+// SAVE / LOAD / EXPORT / PRINT
+// ═══════════════════════════════════════════════════
+document.getElementById('saveDraftBtn')?.addEventListener('click', () => {
+    localStorage.setItem('sjoWorksheetDraftV2', JSON.stringify(collectAllFormData()));
+    document.getElementById('lastSaved').innerText = `Last saved: ${new Date().toLocaleTimeString()}`;
+    alert('Draft saved to browser storage.');
+});
+
+document.getElementById('loadDraftBtn')?.addEventListener('click', () => {
+    const raw = localStorage.getItem('sjoWorksheetDraftV2');
+    if (!raw) { alert('No saved draft found.'); return; }
+    try { populateFromData(JSON.parse(raw)); alert('Draft loaded.'); }
+    catch(e) { alert('Error loading draft.'); }
+});
+
+document.getElementById('exportJsonBtn')?.addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(collectAllFormData(), null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `sjo_separation_worksheet_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+});
+
+document.getElementById('printBtn')?.addEventListener('click', () => window.print());
+
+document.getElementById('resetBtn')?.addEventListener('click', () => {
+    if (!confirm('Reset all data? This cannot be undone.')) return;
+    employees = [];
+    rosterRows = [];
+    renderEmployees();
+    renderRosterTable();
+    document.querySelectorAll('#separationForm input:not([type=radio]):not([type=checkbox]), #separationForm textarea').forEach(el => {
+        if (!el.readOnly && !el.getAttribute('data-field') && !el.getAttribute('data-roster-field')) el.value = '';
+    });
+    document.querySelectorAll('#separationForm input[type=checkbox]').forEach(el => el.checked = false);
+    document.querySelectorAll('#separationForm input[type=radio]').forEach(el => {
+        if (['No','N/A'].includes(el.value)) el.checked = true;
+    });
+    updateSummaryAndWarnings();
+});
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+renderEmployees();
+renderRosterTable();
+updateSummaryAndWarnings();
+</script>
+</body>
+</html>
